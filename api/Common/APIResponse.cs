@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace API.Common;
 
 public class APIResponse<T>
@@ -12,21 +14,25 @@ public class APIResponse<T>
 
     public static APIResponse<T> Ok(T data, string? message) => new()
     {
-        StatusCode = 200,
+        StatusCode = (int)HttpStatusCode.OK,
         Success = true,
         Data = data,
         Message = message,
         Timestamp = DateTime.UtcNow,
     };
-    public static APIResponse<T> Fail(object error, string? message) => new()
-    {
-        StatusCode = 401,
-        Success = false,
-        Error = error,
-        Message = message,
-        Timestamp = DateTime.UtcNow,
-    };
-    public static APIResponse<T> Message(string? message) => new()
+    public static APIResponse<T> Fail(
+        object error,
+        string? message,
+        HttpStatusCode statusCode = HttpStatusCode.InternalServerError
+     ) => new()
+     {
+         StatusCode = (int)statusCode,
+         Success = false,
+         Error = error,
+         Message = message,
+         Timestamp = DateTime.UtcNow,
+     };
+    public static APIResponse<T> Messages(string? message) => new()
     {
         Success = true,
         Message = message,
